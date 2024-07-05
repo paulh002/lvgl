@@ -31,13 +31,11 @@ endif()
 add_library(lvgl::lvgl ALIAS lvgl)
 
 # Define interface libraries for examples and demos
-add_library(lvgl_examples INTERFACE)
-add_library(lvgl::examples ALIAS lvgl_examples)
-add_library(lvgl_demos INTERFACE)
-add_library(lvgl::demos ALIAS lvgl_demos)
 
 # Conditionally add sources to examples and demos if the options are enabled
 if (BUILD_LVGL_EXAMPLES)
+	add_library(lvgl_examples INTERFACE)
+	add_library(lvgl::examples ALIAS lvgl_examples)
     file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
     set_property(TARGET lvgl_examples APPEND PROPERTY INTERFACE_SOURCES ${EXAMPLE_SOURCES})
     target_include_directories(lvgl_examples SYSTEM
@@ -46,6 +44,8 @@ if (BUILD_LVGL_EXAMPLES)
 endif()
 
 if (BUILD_LVGL_DEMOS)
+	add_library(lvgl_demos INTERFACE)
+	add_library(lvgl::demos ALIAS lvgl_demos)
     file(GLOB_RECURSE DEMO_SOURCES ${LVGL_ROOT_DIR}/demos/*.c)
     set_property(TARGET lvgl_demos APPEND PROPERTY INTERFACE_SOURCES ${DEMO_SOURCES})
     target_include_directories(lvgl_demos SYSTEM
