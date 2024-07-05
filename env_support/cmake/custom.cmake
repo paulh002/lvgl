@@ -14,9 +14,13 @@ get_filename_component(LV_CONF_DIR ${LV_CONF_PATH} DIRECTORY)
 # Option to build shared libraries (as opposed to static), default: OFF
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
+# Option to build examples, default: OFF
+option(BUILD_LVGL_EXAMPLES "Build lvgl examples" OFF)
+
+# Option to build demos, default: OFF
+option(BUILD_LVGL_DEMOS "Build lvgl demos" OFF)
+
 file(GLOB_RECURSE SOURCES ${LVGL_ROOT_DIR}/src/*.c)
-file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
-file(GLOB_RECURSE DEMO_SOURCES ${LVGL_ROOT_DIR}/demos/*.c)
 
 if (BUILD_SHARED_LIBS)
   add_library(lvgl SHARED ${SOURCES})
@@ -25,10 +29,29 @@ else()
 endif()
 
 add_library(lvgl::lvgl ALIAS lvgl)
-add_library(lvgl_examples STATIC ${EXAMPLE_SOURCES})
+
+# Define interface libraries for examples and demos
+add_library(lvgl_examples INTERFACE)
 add_library(lvgl::examples ALIAS lvgl_examples)
-add_library(lvgl_demos STATIC ${DEMO_SOURCES})
+add_library(lvgl_demos INTERFACE)
 add_library(lvgl::demos ALIAS lvgl_demos)
+
+# Conditionally add sources to examples and demos if the options are enabled
+if (BUILD_LVGL_EXAMPLES)
+    file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
+    set_property(TARGET lvgl_examples APPEND PROPERTY INTERFACE_SOURCES ${EXAMPLE_SOURCES})
+    target_include_directories(lvgl_examples SYSTEM
+                               INTERFACE ${LVGL_ROOT_DIR}/examples)
+    target_link_libraries(lvgl_examples INTERFACE lvgl)
+endif()
+
+if (BUILD_LVGL_DEMOS)
+    file(GLOB_RECURSE DEMO_SOURCES ${LVGL_ROOT_DIR}/demos/*.c)
+    set_property(TARGET lvgl_demos APPEND PROPERTY INTERFACE_SOURCES ${DEMO_SOURCES})
+    target_include_directories(lvgl_demos SYSTEM
+                               INTERFACE ${LVGL_ROOT_DIR}/demos)
+    target_link_libraries(lvgl_demos INTERFACE lvgl)
+endif()
 
 target_compile_definitions(
   lvgl PUBLIC $<$<BOOL:${LV_LVGL_H_INCLUDE_SIMPLE}>:LV_LVGL_H_INCLUDE_SIMPLE>
@@ -37,16 +60,7 @@ target_compile_definitions(
 # Include root and optional parent path of LV_CONF_PATH
 target_include_directories(lvgl SYSTEM PUBLIC ${LVGL_ROOT_DIR} ${LV_CONF_DIR})
 
-# Include /examples folder
-target_include_directories(lvgl_examples SYSTEM
-                           PUBLIC ${LVGL_ROOT_DIR}/examples)
-target_include_directories(lvgl_demos SYSTEM
-                           PUBLIC ${LVGL_ROOT_DIR}/demos)
-
-target_link_libraries(lvgl_examples PUBLIC lvgl)
-target_link_libraries(lvgl_demos PUBLIC lvgl)
-
-# Lbrary and headers can be installed to system using make install
+# Library and headers can be installed to system using make install
 file(GLOB LVGL_PUBLIC_HEADERS "${CMAKE_SOURCE_DIR}/lv_conf.h"
      "${CMAKE_SOURCE_DIR}/lvgl.h")
 
@@ -89,3 +103,18 @@ install(
   LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
   RUNTIME DESTINATION "${LIB_INSTALL_DIR}"
   PUBLIC_HEADER DESTINATION "${INC_INSTALL_DIR}")
+
+# Conditionally install the example and demo targets
+if (BUILD_LVGL_EXAMPLES)
+  install(TARGETS lvgl_examples
+          ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
+          LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
+          RUNTIME DESTINATION "${LIB_INSTALL_DIR}")
+endif()
+
+if (BUILD_LVGL_DEMOS)
+  install(TARGETS lvgl_demos
+          ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
+          LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
+          RUNTIME DESTINATION "${LIB_INSTALL_DIR}")
+endif()
