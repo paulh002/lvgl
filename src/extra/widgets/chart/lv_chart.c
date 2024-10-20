@@ -464,6 +464,21 @@ lv_chart_cursor_t  * lv_chart_add_cursor(lv_obj_t * obj, lv_color_t color, lv_di
 }
 
 /**
+ * remove a cursor
+ * @param chart     pointer to chart object
+ * @param cursor     pointer to the cursor
+ */
+void lv_chart_remove_cursor(lv_obj_t * obj, lv_chart_cursor_t * cursor)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    LV_ASSERT_NULL(cursor);
+
+    lv_chart_t *chart = (lv_chart_t *)obj;
+    _lv_ll_remove(&chart->cursor_ll, cursor);
+    lv_mem_free(cursor);
+}
+
+/**
  * Set the coordinate of the cursor with respect
  * to the origin of series area of the chart.
  * @param chart pointer to a chart object.
@@ -1302,15 +1317,16 @@ static void draw_cursors(lv_obj_t * obj, lv_draw_ctx_t * draw_ctx)
     part_draw_dsc.part = LV_PART_CURSOR;
     part_draw_dsc.class_p = MY_CLASS;
     part_draw_dsc.type = LV_CHART_DRAW_PART_CURSOR;
-
-    /*Go through all cursor lines*/
+	
+	/*Go through all cursor lines*/
     _LV_LL_READ_BACK(&chart->cursor_ll, cursor) {
         lv_memcpy(&line_dsc_tmp, &line_dsc_ori, sizeof(lv_draw_line_dsc_t));
         lv_memcpy(&point_dsc_tmp, &point_dsc_ori, sizeof(lv_draw_rect_dsc_t));
         line_dsc_tmp.color = cursor->color;
         point_dsc_tmp.bg_color = cursor->color;
+		part_draw_dsc.sub_part_ptr = (void *)cursor;
 
-        part_draw_dsc.p1 = &p1;
+		part_draw_dsc.p1 = &p1;
         part_draw_dsc.p2 = &p2;
 
         lv_coord_t cx;
@@ -1325,6 +1341,8 @@ static void draw_cursors(lv_obj_t * obj, lv_draw_ctx_t * draw_ctx)
             lv_chart_get_point_pos_by_id(obj, cursor->ser, cursor->point_id, &p);
             cx = p.x;
             cy = p.y;
+			cursor->pos.x = cx;
+			cursor->pos.y = cy;
         }
 
         cx += obj->coords.x1;

@@ -378,9 +378,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lvgl.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClInclude Include="lvgl.h">
       <Filter>Header files</Filter>
     </ClInclude>
@@ -1454,6 +1451,9 @@
     </ClInclude>
     <ClInclude Include="src\widgets\lv_textarea.h">
       <Filter>Header files\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lv_conf.h">
+      <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
