@@ -348,7 +348,8 @@ lv_chart_series_t * lv_chart_add_series(lv_obj_t * obj, lv_color_t color, lv_cha
     lv_chart_series_t * ser = _lv_ll_ins_head(&chart->series_ll);
     LV_ASSERT_MALLOC(ser);
     if(ser == NULL) return NULL;
-
+	lv_memset_00(ser, sizeof(lv_chart_series_t));
+	
     lv_coord_t def = LV_CHART_POINT_NONE;
 
     ser->color  = color;
