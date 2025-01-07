@@ -383,7 +383,6 @@ static void indev_pointer_proc(lv_indev_t * i, lv_indev_data_t * data)
 
     i->proc.types.pointer.act_point.x = data->point.x;
     i->proc.types.pointer.act_point.y = data->point.y;
-    /* store button id (left / right) etc*/
 	i->proc.types.pointer.btn_id = data->btn_id;
 
 	if(i->proc.state == LV_INDEV_STATE_PRESSED) {
