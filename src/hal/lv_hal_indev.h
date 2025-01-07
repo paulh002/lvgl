@@ -157,6 +157,8 @@ typedef struct _lv_indev_proc_t {
             lv_dir_t scroll_dir : 4;
             lv_dir_t gesture_dir : 4;
             uint8_t gesture_sent : 1;
+            // button number of mouse
+			uint32_t btn_id;
         } pointer;
         struct {
             /*Keypad data*/

@@ -106,6 +106,13 @@ void lv_indev_get_point(const lv_indev_t * indev, lv_point_t * point);
 lv_dir_t lv_indev_get_gesture_dir(const lv_indev_t * indev);
 
 /**
+ * Get the mouse button pressed
+ * @param indev pointer to an input device
+ * @return the last pressed key (0 on error)
+ */
+uint32_t lv_indev_get_button(const lv_indev_t *indev);
+
+/**
  * Get the last pressed key of an input device (for LV_INDEV_TYPE_KEYPAD)
  * @param indev pointer to an input device
  * @return the last pressed key (0 on error)

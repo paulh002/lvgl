@@ -240,6 +240,14 @@ lv_dir_t lv_indev_get_gesture_dir(const lv_indev_t * indev)
     return indev->proc.types.pointer.gesture_dir;
 }
 
+uint32_t lv_indev_get_button(const lv_indev_t *indev)
+{
+	if (indev->driver->type != LV_INDEV_TYPE_POINTER)
+		return 0;
+	else
+		return indev->proc.types.pointer.btn_id;
+}
+
 uint32_t lv_indev_get_key(const lv_indev_t * indev)
 {
     if(indev->driver->type != LV_INDEV_TYPE_KEYPAD)
@@ -375,8 +383,10 @@ static void indev_pointer_proc(lv_indev_t * i, lv_indev_data_t * data)
 
     i->proc.types.pointer.act_point.x = data->point.x;
     i->proc.types.pointer.act_point.y = data->point.y;
+    /* store button id (left / right) etc*/
+	i->proc.types.pointer.btn_id = data->btn_id;
 
-    if(i->proc.state == LV_INDEV_STATE_PRESSED) {
+	if(i->proc.state == LV_INDEV_STATE_PRESSED) {
         indev_proc_press(&i->proc);
     }
     else {
