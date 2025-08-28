@@ -47,6 +47,13 @@ typedef enum {
     LV_INDEV_MODE_EVENT,
 } lv_indev_mode_t;
 
+typedef enum
+{
+	LV_INDEV_BTN_NONE = 0,
+	LV_INDEV_BTN_LEFT,
+	LV_INDEV_BTN_MIDDLE,
+	LV_INDEV_BTN_RIGHT,
+} lv_indev_button_id_t;		
 
 /* Supported types of gestures */
 typedef enum {

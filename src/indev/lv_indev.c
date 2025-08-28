@@ -732,6 +732,8 @@ static void indev_pointer_proc(lv_indev_t * i, lv_indev_data_t * data)
     i->pointer.act_point.x = data->point.x;
     i->pointer.act_point.y = data->point.y;
     i->pointer.diff = data->enc_diff;
+	if (data->btn_id)
+	    i->pointer.btn_id = data->btn_id;			  
 
 #if LV_USE_GESTURE_RECOGNITION
     for(int gest = 0; gest < LV_INDEV_GESTURE_CNT; gest++) {

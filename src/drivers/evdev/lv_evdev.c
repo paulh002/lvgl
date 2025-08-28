@@ -64,6 +64,7 @@ typedef struct {
     int root_x;
     int root_y;
     int key;
+	int btn_id;		
     lv_indev_state_t state;
     bool deleting;
 } lv_evdev_t;
@@ -169,7 +170,7 @@ static void _evdev_read(lv_indev_t * indev, lv_indev_data_t * data)
             }
         }
         else if(in.type == EV_KEY) {
-            if(in.code == BTN_MOUSE || in.code == BTN_TOUCH) {
+			if (in.code == BTN_MOUSE || in.code == BTN_TOUCH || in.code == BTN_RIGHT || in.code == BTN_MIDDLE) {
                 if(in.value == 0) dsc->state = LV_INDEV_STATE_RELEASED;
                 else if(in.value == 1) dsc->state = LV_INDEV_STATE_PRESSED;
             }
@@ -181,6 +182,18 @@ static void _evdev_read(lv_indev_t * indev, lv_indev_data_t * data)
                     break;
                 }
             }
+			switch (in.code)
+			{
+			case BTN_MOUSE:
+				dsc->btn_id = LV_INDEV_BTN_LEFT;
+				break;
+			case BTN_MIDDLE:
+				dsc->btn_id = LV_INDEV_BTN_MIDDLE;
+				break;
+			case BTN_RIGHT:
+				dsc->btn_id = LV_INDEV_BTN_RIGHT;
+				break;
+			}
         }
     }
     if(!dsc->deleting && br == -1 && errno != EAGAIN) {
@@ -202,6 +215,7 @@ static void _evdev_read(lv_indev_t * indev, lv_indev_data_t * data)
             break;
         case LV_INDEV_TYPE_POINTER:
             data->state = dsc->state;
+			data->btn_id = dsc->btn_id;
             data->point = _evdev_process_pointer(indev, dsc->root_x, dsc->root_y);
             break;
         default:

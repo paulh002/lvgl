@@ -85,6 +85,14 @@ lv_obj_t * lv_scale_create(lv_obj_t * parent);
  *====================*/
 
 /**
+ * Set center pos. See lv_scale_mode_t.
+ * @param obj       pointer to Scale Widget
+ * @param x      x position of the center of the needle
+ * @param y      y position of the center of the needle
+ */
+void lv_scale_set_center_pos(lv_obj_t *obj, int32_t x, int32_t y);
+
+/**
  * Set scale mode. See lv_scale_mode_t.
  * @param obj       pointer to Scale Widget
  * @param mode      the new scale mode
@@ -211,6 +219,15 @@ lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj);
  * @param range_max     Section new maximum value
  */
 void lv_scale_section_set_range(lv_scale_section_t * section, int32_t min, int32_t max);
+
+/**
+ * DEPRECATED, use lv_scale_set_section_rangeinstead.
+ * Set range for specified Scale Section
+ * @param section       pointer to Section
+ * @param range_min     Section new minimum value
+ * @param range_max     Section new maximum value
+ */
+void lv_scale_set_section_offset(lv_obj_t *scale, lv_scale_section_t *section, int32_t offset);
 
 /**
  * Set the range of a scale section
