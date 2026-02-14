@@ -97,6 +97,33 @@ lv_obj_t * lv_tabview_add_tab(lv_obj_t * obj, const char * name)
     return page;
 }
 
+void lv_tabview_enable_tab(lv_obj_t *obj, uint32_t idx, const bool enable)
+{
+	LV_ASSERT_OBJ(obj, MY_CLASS);
+
+	lv_obj_t *tab_bar = lv_tabview_get_tab_bar(obj);
+	lv_obj_t *button = lv_obj_get_child_by_type(tab_bar, idx, &lv_button_class);
+	if (enable)
+		lv_obj_remove_state(button, LV_STATE_DISABLED);
+	else
+		lv_obj_add_state(button, LV_STATE_DISABLED);
+}
+
+void lv_tabview_set_button_style(lv_obj_t *obj, lv_style_t *style_btn)
+{
+	LV_ASSERT_OBJ(obj, MY_CLASS);
+
+	lv_obj_t *tab_bar = lv_tabview_get_tab_bar(obj);
+	lv_obj_t *button = lv_obj_get_child_by_type(tab_bar, 0, &lv_button_class);
+	int i = 0;
+	while (button)
+	{
+		lv_obj_add_style(button, style_btn, LV_PART_ITEMS);
+		button = lv_obj_get_child_by_type(tab_bar, (int32_t)i, &lv_button_class);
+		i++;
+	}
+}
+
 void lv_tabview_rename_tab(lv_obj_t * obj, uint32_t idx, const char * new_name)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);

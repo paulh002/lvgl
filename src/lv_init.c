@@ -41,6 +41,7 @@
 #include "others/sysmon/lv_sysmon_private.h"
 #include "others/translation/lv_translation.h"
 #include "others/xml/lv_xml.h"
+#include "others/msg/lv_msg.h"
 
 #if LV_USE_SVG
     #include "libs/svg/lv_svg_decoder.h"
@@ -413,6 +414,7 @@ void lv_init(void)
 #if LV_USE_XML
     lv_xml_init();
 #endif
+    lv_msg_init();
 
     lv_initialized = true;
 

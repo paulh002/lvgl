@@ -44,6 +44,22 @@ lv_obj_t * lv_tabview_create(lv_obj_t * parent);
 lv_obj_t * lv_tabview_add_tab(lv_obj_t * obj, const char * name);
 
 /**
+ * Enable or disable a tab button of the tabview
+ * @param obj       pointer to a tabview widget
+ * @param idx       the index of the tab to rename
+ * @param enable    enable or disable tab
+ *
+ */
+void lv_tabview_enable_tab(lv_obj_t *obj, uint32_t idx, const bool enable);
+
+/**
+ * Add style to tabview buttons
+ * @param obj       pointer to a tabview widget
+ * @param style_btn       pointer to style
+ */
+
+void lv_tabview_set_button_style(lv_obj_t *obj, lv_style_t *style_btn);
+/**
  * Change the name of the tab
  * @param obj       pointer to a tabview widget
  * @param idx       the index of the tab to rename

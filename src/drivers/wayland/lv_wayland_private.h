@@ -21,7 +21,7 @@ extern "C" {
 #include "lv_wayland_smm.h"
 #include <sys/poll.h>
 #include <wayland-client-protocol.h>
-#include <wayland_xdg_shell.h>
+#include <xdg-shell-client-protocol.h>
 
 #if LV_WAYLAND_USE_DMABUF
 #include <sys/mman.h>

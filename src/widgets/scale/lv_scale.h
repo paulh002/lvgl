@@ -20,7 +20,6 @@ extern "C" {
 #include "../../core/lv_obj.h"
 #include "../line/lv_line.h"
 #include "../image/lv_image.h"
-#include "../../others/observer/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -86,6 +85,14 @@ lv_obj_t * lv_scale_create(lv_obj_t * parent);
  *====================*/
 
 /**
+ * Set center pos. See lv_scale_mode_t.
+ * @param obj       pointer to Scale Widget
+ * @param x      x position of the center of the needle
+ * @param y      y position of the center of the needle
+ */
+void lv_scale_set_center_pos(lv_obj_t *obj, int32_t x, int32_t y);
+
+/**
  * Set scale mode. See lv_scale_mode_t.
  * @param obj       pointer to Scale Widget
  * @param mode      the new scale mode
@@ -120,20 +127,6 @@ void lv_scale_set_label_show(lv_obj_t * obj, bool show_label);
  * @param max       maximum value of Scale
  */
 void lv_scale_set_range(lv_obj_t * obj, int32_t min, int32_t max);
-
-/**
- * Set minimum values on Scale.
- * @param obj       pointer to Scale Widget
- * @param min       minimum value of Scale
- */
-void lv_scale_set_min_value(lv_obj_t * obj, int32_t min);
-
-/**
- * Set maximum values on Scale.
- * @param obj       pointer to Scale Widget
- * @param min       minimum value of Scale
- */
-void lv_scale_set_max_value(lv_obj_t * obj, int32_t max);
 
 /**
  * Set angle between the low end and the high end of the Scale.
@@ -219,7 +212,7 @@ void lv_scale_set_draw_ticks_on_top(lv_obj_t * obj, bool en);
 lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj);
 
 /**
- * DEPRECATED, use lv_scale_set_section_range instead.
+ * DEPRECATED, use lv_scale_set_section_rangeinstead.
  * Set range for specified Scale Section
  * @param section       pointer to Section
  * @param range_min     Section new minimum value
@@ -228,11 +221,20 @@ lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj);
 void lv_scale_section_set_range(lv_scale_section_t * section, int32_t min, int32_t max);
 
 /**
+ * DEPRECATED, use lv_scale_set_section_rangeinstead.
+ * Set range for specified Scale Section
+ * @param section       pointer to Section
+ * @param range_min     Section new minimum value
+ * @param range_max     Section new maximum value
+ */
+void lv_scale_set_section_offset(lv_obj_t *scale, lv_scale_section_t *section, int32_t offset);
+
+/**
  * Set the range of a scale section
  * @param scale         pointer to scale
  * @param section       pointer to section
- * @param range_min     the section's new minimum value
- * @param range_max     the section's new maximum value
+ * @param range_min     section new minimum value
+ * @param range_max     section new maximum value
  */
 void lv_scale_set_section_range(lv_obj_t * scale, lv_scale_section_t * section, int32_t min, int32_t max);
 
@@ -242,7 +244,7 @@ void lv_scale_set_section_range(lv_obj_t * scale, lv_scale_section_t * section, 
  * @param section       pointer to section
  * @param min           the section's new minimum value
  */
-void lv_scale_set_section_min_value(lv_obj_t * scale, lv_scale_section_t * section, int32_t min);
+void lv_scale_set_section_min_value(lv_obj_t *scale, lv_scale_section_t *section, int32_t min);
 
 /**
  * Set the maximum value of a scale section
@@ -250,7 +252,7 @@ void lv_scale_set_section_min_value(lv_obj_t * scale, lv_scale_section_t * secti
  * @param section       pointer to section
  * @param max           the section's new maximum value
  */
-void lv_scale_set_section_max_value(lv_obj_t * scale, lv_scale_section_t * section, int32_t max);
+void lv_scale_set_section_max_value(lv_obj_t *scale, lv_scale_section_t *section, int32_t max);
 
 /**
  * DEPRECATED, use lv_scale_set_section_style_main/indicator/items instead.
@@ -313,7 +315,7 @@ int32_t lv_scale_get_major_tick_every(lv_obj_t * obj);
 /**
  * Get angular location of low end of Scale.
  * @param obj   pointer to Scale Widget
- * @return      Scale low end angular location
+ * @return      Scale low end anglular location
  */
 int32_t lv_scale_get_rotation(lv_obj_t * obj);
 
@@ -344,32 +346,6 @@ int32_t lv_scale_get_range_min_value(lv_obj_t * obj);
  * @return      Scale's maximum value
  */
 int32_t lv_scale_get_range_max_value(lv_obj_t * obj);
-
-/*=====================
- * Other functions
- *====================*/
-
-#if LV_USE_OBSERVER
-
-/**
- * Bind an integer subject to a scales section minimum value
- * @param obj       pointer to a Scale
- * @param section   pointer to a Scale section
- * @param subject   pointer to a Subject
- * @return          pointer to newly-created Observer
- */
-lv_observer_t * lv_scale_bind_section_min_value(lv_obj_t * obj, lv_scale_section_t * section, lv_subject_t * subject);
-
-/**
- * Bind an integer subject to a scales section maximum value
- * @param obj       pointer to an Scale
- * @param section   pointer to a Scale section
- * @param subject   pointer to a Subject
- * @return          pointer to newly-created Observer
- */
-lv_observer_t * lv_scale_bind_section_max_value(lv_obj_t * obj, lv_scale_section_t * section, lv_subject_t * subject);
-
-#endif
 
 /**********************
  *      MACROS

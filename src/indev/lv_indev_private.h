@@ -21,7 +21,6 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define LV_INDEV_VECT_HIST_SIZE 8
 
 /**********************
  *      TYPEDEFS
@@ -45,7 +44,6 @@ struct _lv_indev_t {
     uint8_t wait_until_release : 1;
     uint8_t stop_processing_query : 1;
 
-    uint32_t timestamp;            /**< Timestamp of last event */
     uint32_t pr_timestamp;         /**< Pressed time stamp*/
     uint32_t longpr_rep_timestamp; /**< Long press repeat time stamp*/
 
@@ -85,9 +83,6 @@ struct _lv_indev_t {
         lv_point_t last_point; /**< Last point of input device.*/
         lv_point_t last_raw_point; /**< Last point read from read_cb. */
         lv_point_t vect; /**< Difference between `act_point` and `last_point`.*/
-        lv_point_t vect_hist[LV_INDEV_VECT_HIST_SIZE];
-        uint32_t   vect_hist_timestamp[LV_INDEV_VECT_HIST_SIZE];
-        uint8_t    vect_hist_index;
         lv_point_t scroll_sum; /*Count the dragged pixels to check LV_INDEV_DEF_SCROLL_LIMIT*/
         lv_point_t scroll_throw_vect;
         lv_point_t scroll_throw_vect_ori;
@@ -99,6 +94,7 @@ struct _lv_indev_t {
         lv_area_t scroll_area;
         lv_point_t gesture_sum; /*Count the gesture pixels to check LV_INDEV_DEF_GESTURE_LIMIT*/
         int32_t diff;
+		lv_indev_button_id_t btn_id;					  
         /*Short click streaks*/
         uint8_t short_click_streak;
         lv_point_t last_short_click_point;

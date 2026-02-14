@@ -13,7 +13,7 @@
 
 
 #include <linux/input-event-codes.h>
-#include "wayland_xdg_shell.h"
+#include "xdg-shell-client-protocol.h"
 
 /*********************
  *      DEFINES
