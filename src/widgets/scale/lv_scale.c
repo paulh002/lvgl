@@ -2,8 +2,9 @@
  * @file lv_scale.c
  *
  */
-
-/*********************
+#include <stdio.h>
+#include <stdlib.h>
+/**********************
  *      INCLUDES
  *********************/
 #include "lv_scale_private.h"
@@ -265,10 +266,11 @@ void lv_scale_set_line_needle_value(lv_obj_t * obj, lv_obj_t * needle_line, int3
         angle = scale->angle_range * (value - scale->range_min) / (scale->range_max - scale->range_min);
     }
 
-    needle_length_x = (actual_needle_length * lv_trigo_cos(scale->rotation + angle)) >> LV_TRIGO_SHIFT;
-    needle_length_y = (actual_needle_length * lv_trigo_sin(scale->rotation + angle)) >> LV_TRIGO_SHIFT;
+	int32_t r = actual_needle_length + (scale_height / 2) ;
+	needle_length_x = (r * lv_trigo_cos(scale->rotation + angle)) >> LV_TRIGO_SHIFT;
+	needle_length_y = (r * lv_trigo_sin(scale->rotation + angle)) >> LV_TRIGO_SHIFT;
 
-    if(lv_line_is_point_array_mutable(needle_line) && lv_line_get_point_count(needle_line) >= 2) {
+	if(lv_line_is_point_array_mutable(needle_line) && lv_line_get_point_count(needle_line) >= 2) {
         needle_line_points = lv_line_get_points_mutable(needle_line);
     }
 
@@ -294,7 +296,8 @@ void lv_scale_set_line_needle_value(lv_obj_t * obj, lv_obj_t * needle_line, int3
 	needle_line_points[0].x = (scale_width / 2) + scale->arc_center_pos_x;
 	needle_line_points[0].y = (scale_height / 2) + scale->arc_center_pos_y;
 	needle_line_points[1].x = (scale_width / 2) + scale->arc_center_pos_x + needle_length_x;
-	needle_line_points[1].y = (scale_height / 2) + scale->arc_center_pos_y + needle_length_y;    
+	needle_line_points[1].y = (scale_height / 2) + scale->arc_center_pos_y + needle_length_y;
+
 	lv_line_set_points_mutable(needle_line, needle_line_points, 2);
 }
 
