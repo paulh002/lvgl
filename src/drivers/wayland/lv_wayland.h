@@ -35,6 +35,8 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
+void lv_wayland_init(void);
+int lv_wayland_get_display_size(const char *name, int32_t *width, int32_t *height);
 /**
  * Wrapper around lv_timer_handler
  * @note Must be called in the application run loop instead of the

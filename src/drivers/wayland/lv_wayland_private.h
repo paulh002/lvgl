@@ -146,12 +146,16 @@ typedef struct {
 
 struct output_info {
     struct wl_output * wl_output;
+	struct zxdg_output_v1 *xdg_output;
     char name[64];
+	char description[256];
     int width;
     int height;
     int refresh;
     int scale;
     int flags;
+	uint32_t wl_name; /* registry name */
+	struct wl_list link;
 };
 
 struct lv_wayland_context {
