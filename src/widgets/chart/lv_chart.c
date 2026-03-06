@@ -1456,6 +1456,8 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
             lv_chart_get_point_pos_by_id(obj, cursor->ser, cursor->point_id, &p);
             cx = p.x;
             cy = p.y;
+			cursor->pos.x = cx;
+			cursor->pos.y = cy;
         }
 
         cx += obj->coords.x1;
