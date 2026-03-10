@@ -548,6 +548,12 @@ lv_chart_cursor_t  * lv_chart_add_cursor(lv_obj_t * obj, lv_color_t color, lv_di
     return cursor;
 }
 
+void lv_chart_set_direction(lv_chart_cursor_t *cursor, lv_dir_t dir)
+{
+	LV_ASSERT_NULL(cursor);
+	cursor->dir = dir;
+}
+
 void lv_chart_remove_cursor(lv_obj_t * obj, lv_chart_cursor_t * cursor)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -1435,7 +1441,7 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
     lv_draw_rect_dsc_t point_dsc_tmp;
 
     int32_t point_w = lv_obj_get_style_width(obj, LV_PART_CURSOR) / 2;
-    int32_t point_h = lv_obj_get_style_width(obj, LV_PART_CURSOR) / 2;
+    int32_t point_h = lv_obj_get_style_height(obj, LV_PART_CURSOR) / 2;
 
     /*Go through all cursor lines*/
     LV_LL_READ_BACK(&chart->cursor_ll, cursor) {
@@ -1460,15 +1466,34 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
 			cursor->pos.y = cy;
         }
 
-        cx += obj->coords.x1;
+		int32_t cy1 = cy;
+		cx += obj->coords.x1;
         cy += obj->coords.y1;
 
         lv_area_t point_area;
         bool draw_point = point_w && point_h;
-        point_area.x1 = cx - point_w;
-        point_area.x2 = cx + point_w;
-        point_area.y1 = cy - point_h;
-        point_area.y2 = cy + point_h;
+
+		if (cursor->dir & LV_DIR_RIGHT_FIX)
+		{
+			point_area.x1 = cx;
+			point_area.x2 = cx + point_w;
+			point_area.y1 = 0;
+			point_area.y2 = obj->coords.y1 + 2 * point_h;
+		}
+		else if (cursor->dir & LV_DIR_LEFT_FIX)
+		{
+			point_area.x1 = cx - point_w;
+			point_area.x2 = cx;
+			point_area.y1 = 0;
+			point_area.y2 = obj->coords.y1 + 2 * point_h;
+		}
+		else
+		{
+			point_area.x1 = cx - point_w;
+			point_area.x2 = cx + point_w;
+			point_area.y1 = cy - point_h;
+			point_area.y2 = cy + point_h;
+		}
 
         if(cursor->dir & LV_DIR_HOR) {
             line_dsc.p1.x = cursor->dir & LV_DIR_LEFT ? obj->coords.x1 : cx;
@@ -1488,11 +1513,11 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
 
         if(cursor->dir & LV_DIR_VER) {
             line_dsc.p1.x = cx;
-            line_dsc.p1.y = cursor->dir & LV_DIR_TOP ? obj->coords.y1 : cy;
-            line_dsc.p2.x = line_dsc.p1.x;
+			line_dsc.p1.y = cursor->dir & LV_DIR_TOP ? obj->coords.y1 : cy;
+			line_dsc.p2.x = line_dsc.p1.x;
             line_dsc.p2.y = cursor->dir & LV_DIR_BOTTOM ? obj->coords.y2 : cy;
-
-            line_dsc.base.id2 = 1;
+			
+			line_dsc.base.id2 = 1;
             point_dsc_tmp.base.id2 = 1;
 
             lv_draw_line(layer, &line_dsc);
