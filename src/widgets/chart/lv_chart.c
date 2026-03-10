@@ -1487,12 +1487,19 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
 			point_area.y1 = 0;
 			point_area.y2 = obj->coords.y1 + 2 * point_h;
 		}
-		else
+		else if (LV_DIR_MID_FIX)
 		{
 			point_area.x1 = cx - point_w;
 			point_area.x2 = cx + point_w;
-			point_area.y1 = cy - point_h;
-			point_area.y2 = cy + point_h;
+			point_area.y1 = 0;
+			point_area.y2 = obj->coords.y1 + 2 * point_h;
+		}
+		else
+		{
+				point_area.x1 = cx - point_w;
+				point_area.x2 = cx + point_w;
+				point_area.y1 = cy - point_h;
+				point_area.y2 = cy + point_h;
 		}
 
         if(cursor->dir & LV_DIR_HOR) {
