@@ -4181,6 +4181,50 @@
 
 #endif
 
+/** Use Wayland to open a window and handle input on Linux or BSD desktops */
+#ifndef LV_USE_WAYLAND
+    #ifdef CONFIG_LV_USE_WAYLAND
+        #define LV_USE_WAYLAND CONFIG_LV_USE_WAYLAND
+    #else
+        #define LV_USE_WAYLAND          0
+    #endif
+#endif
+#if LV_USE_WAYLAND
+    #ifndef LV_WAYLAND_DIRECT_EXIT
+        #ifdef LV_KCONFIG_PRESENT
+            #ifdef CONFIG_LV_WAYLAND_DIRECT_EXIT
+                #define LV_WAYLAND_DIRECT_EXIT CONFIG_LV_WAYLAND_DIRECT_EXIT
+            #else
+                #define LV_WAYLAND_DIRECT_EXIT 0
+            #endif
+        #else
+            #define LV_WAYLAND_DIRECT_EXIT          1     /**< 1: Exit the application when all Wayland windows are closed */
+        #endif
+    #endif
+#endif
+
+#if LV_USE_WAYLAND
+    /*Automatically detect wayland backend*/
+    #if LV_USE_OPENGLES
+        #define LV_WAYLAND_USE_EGL 1
+        #define LV_WAYLAND_USE_G2D 0
+        #define LV_WAYLAND_USE_SHM 0
+    #elif LV_USE_G2D
+        #define LV_WAYLAND_USE_EGL 0
+        #define LV_WAYLAND_USE_G2D 1
+        #define LV_WAYLAND_USE_SHM 0
+    #else
+        #define LV_WAYLAND_USE_EGL 0
+        #define LV_WAYLAND_USE_G2D 0
+        #define LV_WAYLAND_USE_SHM 1
+    #endif
+#else
+    #define LV_WAYLAND_USE_G2D 0
+    #define LV_WAYLAND_USE_SHM 0
+    #define LV_WAYLAND_USE_EGL 0
+#endif
+
+
 /** Driver for /dev/dri/card */
 #ifndef LV_USE_LINUX_DRM
     #ifdef CONFIG_LV_USE_LINUX_DRM
