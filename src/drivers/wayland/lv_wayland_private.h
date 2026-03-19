@@ -152,6 +152,14 @@ typedef struct _lv_wl_window_t {
 
 } lv_wl_window_t;
 
+typedef struct
+{
+	lv_ll_node_t node;			/* Mandatory: Must be the first member */
+	int32_t id;					/* Wayland Touch ID */
+	struct wl_surface *surface; /* The surface this touch belongs to */
+	lv_point_t last_point;		/* Last known coordinates */
+	lv_indev_state_t state;		/* CURRENT STATE: PRESSED or RELEASED */
+} lv_wl_touch_node_t;
 
 /**********************
  * GLOBAL PROTOTYPES

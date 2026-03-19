@@ -231,6 +231,7 @@ lv_result_t lv_wayland_init(void)
 		printf("WARNING: zxdg_output_manager_v1 not available.\n"
 			   "  Output names via xdg-output will not be shown.\n\n");
 	}
+	
 	is_wayland_initialized = true;
 	wl_display_roundtrip(lv_wl_ctx.wl_display);
 	wl_display_roundtrip(lv_wl_ctx.wl_display);
@@ -437,7 +438,8 @@ static void handle_global(void *data, struct wl_registry *registry, uint32_t nam
 		if (ctx->wl_output_count < LV_WAYLAND_MAX_OUTPUTS)
 		{
 			memset(&ctx->physical_outputs[ctx->wl_output_count], 0, sizeof(lv_wl_output_info_t));
-			struct wl_output *out = wl_registry_bind(registry, name, &wl_output_interface, 1);
+			ctx->physical_outputs[ctx->wl_output_count].scale = 1;
+			struct wl_output *out = wl_registry_bind(registry, name, &wl_output_interface, 2);
 			ctx->physical_outputs[ctx->wl_output_count].wl_output = out;
 			wl_output_add_listener(out, &output_listener, &ctx->physical_outputs[ctx->wl_output_count].wl_output);
 			ctx->wl_output_count++;
