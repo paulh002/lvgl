@@ -70,6 +70,8 @@ static void output_done(void *data, struct wl_output *output);
 static void output_geometry(void *data, struct wl_output *output, int32_t x, int32_t y, int32_t physical_width,
 							int32_t physical_height, int32_t subpixel, const char *make, const char *model, int32_t transform);
 
+typedef void (*lv_wayland_output_event_cb_t)(bool connected, const char *name, int32_t width, int32_t height);
+static lv_wayland_output_event_cb_t output_event_cb = NULL;
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -169,6 +171,50 @@ int lv_wayland_get_display_size(const char *name, int32_t *width, int32_t *heigh
 		}
 	}
 	return 0;
+}
+
+void lv_wayland_set_output_event_cb(lv_wayland_output_event_cb_t cb)
+{
+	output_event_cb = cb;
+}
+
+/**
+ * @brief Check if a monitor is physically attached & active for a given output index
+ * @param output_index Index in lv_wl_ctx.physical_outputs array
+ * @return true if connected, false otherwise
+ */
+bool lv_wayland_is_output_connected(uint32_t output_index)
+{
+	if (output_index >= LV_WAYLAND_MAX_OUTPUTS)
+	{
+		LV_LOG_WARN("Output index %u exceeds max outputs", output_index);
+		return false;
+	}
+	/* In Wayland, an output is only "attached" if the compositor
+	   advertised it via wl_registry and hasn't removed it yet. */
+	return lv_wl_ctx.physical_outputs[output_index].is_connected;
+}
+
+/**
+ * @brief Check if a monitor is currently attached by its Wayland output name
+ * @param output_name Name advertised by compositor (e.g., "HDMI-A-1", "AOC 27B2H")
+ * @return true if connected, false if disconnected or unknown
+ */
+bool lv_wayland_is_output_connected_by_name(const char *output_name)
+{
+	if (!output_name || output_name[0] == '\0')
+	{
+		return false;
+	}
+
+	for (uint32_t i = 0; i < lv_wl_ctx.wl_output_count; i++)
+	{
+		if (strcmp(lv_wl_ctx.physical_outputs[i].name, output_name) == 0)
+		{
+			return lv_wl_ctx.physical_outputs[i].is_connected;
+		}
+	}
+	return false; // Output name never registered by compositor
 }
 
 /**********************
@@ -441,8 +487,15 @@ static void handle_global(void *data, struct wl_registry *registry, uint32_t nam
 			ctx->physical_outputs[ctx->wl_output_count].scale = 1;
 			struct wl_output *out = wl_registry_bind(registry, name, &wl_output_interface, 2);
 			ctx->physical_outputs[ctx->wl_output_count].wl_output = out;
+			ctx->physical_outputs[ctx->wl_output_count].is_connected = true;
 			wl_output_add_listener(out, &output_listener, &ctx->physical_outputs[ctx->wl_output_count].wl_output);
 			ctx->wl_output_count++;
+
+			if (output_event_cb)
+			{
+				/* Will be filled after output_mode/geometry events */
+				output_event_cb(true, ctx->physical_outputs[ctx->wl_output_count].name, 0, 0);
+			}
 		}
 	}
 	else if (strcmp(interface, "zxdg_output_manager_v1") == 0)
@@ -457,9 +510,21 @@ static void handle_global(void *data, struct wl_registry *registry, uint32_t nam
 
 static void handle_global_remove(void *data, struct wl_registry *registry, uint32_t name)
 {
-	LV_UNUSED(data);
 	LV_UNUSED(registry);
-	LV_UNUSED(name);
+	lv_wl_ctx_t *ctx = data;
+	
+	for (uint32_t i = 0; i < LV_WAYLAND_MAX_OUTPUTS; i++)
+	{
+		if (ctx->physical_outputs[ctx->wl_output_count].wl_name == name && ctx->physical_outputs[ctx->wl_output_count].is_connected)
+		{
+			ctx->physical_outputs[ctx->wl_output_count].is_connected = false;
+			if (output_event_cb)
+				output_event_cb(false, ctx->physical_outputs[ctx->wl_output_count].name, 0, 0);
+			wl_output_destroy(ctx->physical_outputs[ctx->wl_output_count].wl_output);
+			ctx->physical_outputs[ctx->wl_output_count].wl_output = NULL;
+			break;
+		}
+	}
 }
 
 #endif /* LV_USE_WAYLAND */

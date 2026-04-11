@@ -93,6 +93,7 @@ typedef struct {
     int scale;
     int flags;
 	uint32_t wl_name; /* registry name */
+	bool is_connected;
 	struct wl_list link;
 } lv_wl_output_info_t;
 

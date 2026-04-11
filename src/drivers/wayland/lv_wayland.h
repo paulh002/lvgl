@@ -53,6 +53,21 @@ void lv_wayland_deinit(void);
 lv_result_t lv_wayland_init(void);
 void lv_wayland_flush(void);
 int lv_wayland_get_display_size(const char *name, int32_t *width, int32_t *height);
+
+/**
+ * @brief Check if a monitor is physically attached & active for a given output index
+ * @param output_index Index in lv_wl_ctx.physical_outputs array
+ * @return true if connected, false otherwise
+ */
+bool lv_wayland_is_output_connected(uint32_t output_index);
+
+/**
+ * @brief Check if a monitor is currently attached by its Wayland output name
+ * @param output_name Name advertised by compositor (e.g., "HDMI-A-1", "AOC 27B2H")
+ * @return true if connected, false if disconnected or unknown
+ */
+bool lv_wayland_is_output_connected_by_name(const char *output_name);
+
 /**********************
  *      MACROS
  **********************/
