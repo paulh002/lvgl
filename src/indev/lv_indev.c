@@ -1087,8 +1087,14 @@ static void indev_encoder_proc(lv_indev_t * i, lv_indev_data_t * data)
 
         i->pr_timestamp = 0;
         i->long_pr_sent = 0;
-    }
-    indev_obj_act = NULL;
+	}
+	
+	/*Only scroll*/
+	else if (data->state == LV_INDEV_STATE_RELEASED && last_state == LV_INDEV_STATE_RELEASED && data->enc_diff != 0) {
+		LV_LOG_INFO("scroll");
+		lv_obj_send_event(lv_group_get_focused(i->group), LV_EVENT_SCROLL, &data->enc_diff);
+	}
+	indev_obj_act = NULL;
 
     /*if encoder steps or simulated steps via left/right keys*/
     if(data->enc_diff != 0) {
