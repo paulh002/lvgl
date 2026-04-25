@@ -143,7 +143,6 @@ lv_wl_seat_pointer_t * lv_wayland_seat_pointer_create(struct wl_seat * seat, str
     wl_seat_pointer->wl_pointer = pointer;
     lv_wayland_update_indevs(pointer_read, wl_seat_pointer);
     lv_wayland_update_indevs(pointeraxis_read, wl_seat_pointer);
-
     return wl_seat_pointer;
 }
 
@@ -201,9 +200,18 @@ static void pointer_read(lv_indev_t * indev, lv_indev_data_t * data)
 		data->point.y = 0;
 		return;
 	}
-	
-    data->point = seat_pointer->point;
-    data->state = seat_pointer->left_btn_state;
+
+	data->btn_id = seat_pointer->btn_id;
+	data->point = seat_pointer->point;
+	switch (data->btn_id)
+	{
+	case LV_INDEV_BTN_RIGHT:
+		data->state = seat_pointer->right_btn_state;
+		break;
+	default:
+		data->state = seat_pointer->left_btn_state;
+		break;
+	}
 }
 
 static void pointer_handle_enter(void * data, struct wl_pointer * pointer, uint32_t serial, struct wl_surface * surface,
@@ -268,13 +276,16 @@ static void pointer_handle_button(void * data, struct wl_pointer * pointer, uint
 
     if(button == BTN_LEFT) {
         seat_pointer->left_btn_state = lv_state;
-    }
+		seat_pointer->btn_id = LV_INDEV_BTN_LEFT;
+	}
     else if(button == BTN_RIGHT) {
         seat_pointer->right_btn_state = lv_state;
-    }
+		seat_pointer->btn_id = LV_INDEV_BTN_RIGHT;
+	}
     else if(button == BTN_MIDDLE) {
         seat_pointer->wheel_btn_state = lv_state;
-    }
+		seat_pointer->btn_id = LV_INDEV_BTN_MIDDLE;
+	}
 }
 
 static void pointer_handle_axis(void * data, struct wl_pointer * pointer, uint32_t time, uint32_t axis,

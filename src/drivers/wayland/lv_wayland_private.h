@@ -46,6 +46,7 @@ typedef struct {
     lv_indev_state_t right_btn_state;
     lv_indev_state_t wheel_btn_state;
     int16_t wheel_diff;
+	int16_t btn_id;
 } lv_wl_seat_pointer_t;
 
 typedef struct {

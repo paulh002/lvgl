@@ -1091,7 +1091,7 @@ static void indev_encoder_proc(lv_indev_t * i, lv_indev_data_t * data)
 	
 	/*Only scroll*/
 	else if (data->state == LV_INDEV_STATE_RELEASED && last_state == LV_INDEV_STATE_RELEASED && data->enc_diff != 0) {
-		LV_LOG_INFO("scroll");
+		LV_LOG_INFO("Scrolled to: x=%d", data->enc_diff);
 		lv_obj_send_event(lv_group_get_focused(i->group), LV_EVENT_SCROLL, &data->enc_diff);
 	}
 	indev_obj_act = NULL;
@@ -1206,10 +1206,18 @@ static void indev_proc_press(lv_indev_t * indev)
     bool new_obj_searched = false;
 
     /*If there is no last object then search*/
-    if(indev_obj_act == NULL) {
-        indev_obj_act = pointer_search_obj(disp, &indev->pointer.act_point);
-        new_obj_searched = true;
-    }
+    if(indev_obj_act == NULL) {			
+		indev_obj_act = pointer_search_obj(disp, &indev->pointer.act_point);
+		if (indev->pointer.btn_id == LV_INDEV_BTN_RIGHT && !lv_obj_has_flag(indev_obj_act, LV_OBJ_FLAG_RIGHT_CLICKABLE))
+		{
+			indev_obj_act = NULL;
+			new_obj_searched = false;
+		}
+		else
+		{
+			new_obj_searched = true;
+		}
+	}
     /*If there is an active object it's not scrolled and not press locked also search*/
     else if(indev->pointer.scroll_obj == NULL &&
             lv_obj_has_flag(indev_obj_act, LV_OBJ_FLAG_PRESS_LOCK) == false) {
