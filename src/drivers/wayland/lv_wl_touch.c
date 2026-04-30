@@ -184,9 +184,9 @@ static void touch_read(lv_indev_t * indev, lv_indev_data_t * data)
 	if (!found_match)
 	{
 		// No active touch found for this window
-		data->state = LV_INDEV_STATE_RELEASED;
-		data->point.x = 0;
-		data->point.y = 0;
+		//data->state = LV_INDEV_STATE_RELEASED;
+		//data->point.x = 0;
+		//data->point.y = 0;
 	}
 
 #if LV_USE_GESTURE_RECOGNITION

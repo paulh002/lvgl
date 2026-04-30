@@ -24,6 +24,7 @@
 #include "../image/lv_image.h"
 #include "../../others/observer/lv_observer_private.h"
 
+#include "stdio.h"
 /*********************
  *      DEFINES
  *********************/
@@ -298,15 +299,14 @@ static void lv_slider_event(const lv_obj_class_t * class_p, lv_event_t * e)
         /*Save the pressed coordinates*/
         lv_indev_get_point(lv_indev_active(), &slider->pressed_point);
         lv_obj_transform_point(obj, &slider->pressed_point, LV_OBJ_POINT_TRANSFORM_FLAG_INVERSE_RECURSIVE);
-    }
+	}
     else if(code == LV_EVENT_PRESSING) {
         update_knob_pos(obj, true);
-    }
+	}
     else if(code == LV_EVENT_RELEASED || code == LV_EVENT_PRESS_LOST) {
         update_knob_pos(obj, false);
         slider->dragging = false;
         slider->value_to_set = NULL;
-
         lv_obj_invalidate(obj);
 
         /*Leave edit mode if released. (No need to wait for LONG_PRESS)*/
@@ -631,7 +631,7 @@ static void update_knob_pos(lv_obj_t * obj, bool check_drag)
         else {
             /*Make the point relative to the indicator*/
             new_value = p.y - (obj->coords.y2 + bg_bottom);
-            new_value = -new_value;
+	        new_value = -new_value;
         }
         new_value = (new_value * range + indic_h / 2) / indic_h;
         new_value += slider->bar.min_value;

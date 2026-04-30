@@ -704,11 +704,10 @@ static void indev_pointer_proc(lv_indev_t * i, lv_indev_data_t * data)
         data->point.y = disp->ver_res - data->point.y - 1;
     }
     if(disp->rotation == LV_DISPLAY_ROTATION_90 || disp->rotation == LV_DISPLAY_ROTATION_270) {
-        int32_t tmp = data->point.y;
+		int32_t tmp = data->point.y;
         data->point.y = data->point.x;
         data->point.x = disp->ver_res - tmp - 1;
     }
-
     /*Simple sanity check*/
     if(data->point.x < 0) {
         LV_LOG_WARN("X is %d which is smaller than zero", (int)data->point.x);
