@@ -1473,34 +1473,30 @@ static void draw_cursors(lv_obj_t * obj, lv_layer_t * layer)
         lv_area_t point_area;
         bool draw_point = point_w && point_h;
 
-		if (cursor->dir & LV_DIR_RIGHT_FIX)
-		{
-			point_area.x1 = cx;
-			point_area.x2 = cx + point_w;
-			point_area.y1 = 0;
-			point_area.y2 = obj->coords.y1 + 2 * point_h;
-		}
-		else if (cursor->dir & LV_DIR_LEFT_FIX)
-		{
-			point_area.x1 = cx - point_w;
-			point_area.x2 = cx;
-			point_area.y1 = 0;
-			point_area.y2 = obj->coords.y1 + 2 * point_h;
-		}
-		else if (LV_DIR_MID_FIX)
-		{
-			point_area.x1 = cx - point_w;
-			point_area.x2 = cx + point_w;
-			point_area.y1 = 0;
-			point_area.y2 = obj->coords.y1 + 2 * point_h;
-		}
-		else
-		{
-				point_area.x1 = cx - point_w;
-				point_area.x2 = cx + point_w;
-				point_area.y1 = cy - point_h;
-				point_area.y2 = cy + point_h;
-		}
+        if (cursor->dir & LV_DIR_RIGHT_FIX) {
+            point_area.x1 = cx;
+            point_area.x2 = cx + point_w;
+            point_area.y1 = obj->coords.y1;
+            point_area.y2 = obj->coords.y2;
+        }
+        else if (cursor->dir & LV_DIR_LEFT_FIX) {
+            point_area.x1 = cx - point_w;
+            point_area.x2 = cx;
+            point_area.y1 = obj->coords.y1;
+            point_area.y2 = obj->coords.y2;
+        }
+        else if (cursor->dir & LV_DIR_MID_FIX) {   // fixed condition
+            point_area.x1 = cx - point_w;
+            point_area.x2 = cx + point_w;
+            point_area.y1 = obj->coords.y1;
+            point_area.y2 = obj->coords.y2;
+        }
+        else {
+            point_area.x1 = cx - point_w;
+            point_area.x2 = cx + point_w;
+            point_area.y1 = cy - point_h;
+            point_area.y2 = cy + point_h;
+        }
 
         if(cursor->dir & LV_DIR_HOR) {
             line_dsc.p1.x = cursor->dir & LV_DIR_LEFT ? obj->coords.x1 : cx;
