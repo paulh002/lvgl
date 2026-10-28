@@ -543,6 +543,14 @@ void lv_display_set_flush_cb(lv_display_t * disp, lv_display_flush_cb_t flush_cb
     disp->flush_cb = flush_cb;
 }
 
+lv_display_flush_cb_t lv_display_get_flush_cb(lv_display_t* disp)
+{
+    if (disp == NULL) disp = lv_display_get_default();
+    if (disp == NULL) return NULL;
+
+    return disp->flush_cb;
+}
+
 void lv_display_set_flush_wait_cb(lv_display_t * disp, lv_display_flush_wait_cb_t wait_cb)
 {
     if(disp == NULL) disp = lv_display_get_default();
